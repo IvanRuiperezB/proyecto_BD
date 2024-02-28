@@ -1,4 +1,5 @@
 #Iván Ruipérez Benítez
+import psycopg2
 from tabulate import tabulate
 import sys
 import MySQLdb
@@ -176,3 +177,12 @@ def MariaDB_ActualizaDireccion(db):
     except:
         db.rollback()
         print("Actualización fallida.")
+
+def PostgreSQL_AbreBD():
+    db=psycopg2.connect(
+    host="localhost",
+    port=5432,
+    database="postgres",
+    user="postgres",
+    password="secret",
+)
