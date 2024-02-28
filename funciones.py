@@ -83,6 +83,7 @@ def MariaDB_AyudaIngresos(db):
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
     except:
+        print()
         print("Consulta fallida.")
     
 def CompruebaValor1():
@@ -117,6 +118,7 @@ def MariaDB_AlumnoTareas(db):
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
     except:
+        print()
         print("Consulta fallida.")
         
 def MariaDB_InsertarAlumno(db):
@@ -131,9 +133,11 @@ def MariaDB_InsertarAlumno(db):
     try:
         cursor.execute(sql)
         db.commit()
+        print()
         print("Inserción realizada con éxito.")
     except:
         db.rollback()
+        print()
         print("Inserción fallida.")
         
 def MariaDB_BorraAlumno(db):
@@ -145,9 +149,11 @@ def MariaDB_BorraAlumno(db):
     try:
         cursor.execute(sql)
         db.commit()
+        print()
         print("Borrado realizado con éxito.")
     except:
         db.rollback()
+        print()
         print("Borrado fallido.")
 
 def MariaDB_ActualizaDireccion(db):
@@ -173,9 +179,11 @@ def MariaDB_ActualizaDireccion(db):
     try:
         cursor.execute(sql)
         db.commit()
+        print()
         print("Actualización realizada con éxito.")
     except:
         db.rollback()
+        print()
         print("Actualización fallida.")
 
 def PostgreSQL_AbreBD():
@@ -196,11 +204,11 @@ def PostgreSQL_opciones(num,db):
     elif int(num) == 3:
         PostgreSQL_AlumnoTareas(db)
     elif int(num) == 4:
-        print("hola")
+        PostgreSQL_InsertarAlumno(db)
     elif int(num) == 5:
-        print("hola")
+        PostgreSQL_BorraAlumno(db)
     elif int(num) == 6:
-        print("hola")
+        PostgreSQL_ActualizaDireccion(db)
 
 def PostgreSQL_ListaAlumnos(db):
     sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2;"
@@ -214,9 +222,9 @@ def PostgreSQL_ListaAlumnos(db):
             datos.append(registro)
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
-        cursor.close()
     except:
         print("Consulta fallida.")
+    cursor.close()
 
 def PostgreSQL_AyudaIngresos(db):
     print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
@@ -239,9 +247,9 @@ def PostgreSQL_AyudaIngresos(db):
             datos.append(registro)
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
-        cursor.close()
     except:
         print("Consulta fallida.")
+    cursor.close()
 
 def PostgreSQL_AlumnoTareas(db):
     dni=input("DNI del Alumno: ")
@@ -256,6 +264,72 @@ def PostgreSQL_AlumnoTareas(db):
             datos.append(registro)
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
-        cursor.close()
     except:
         print("Consulta fallida.")
+    cursor.close()
+
+def PostgreSQL_InsertarAlumno(db):
+    dni=input("DNI del alumno: ")
+    direccion=input("Dirección del alumno: ")
+    municipio=input("Municipio del alumno: ")
+    nombre=input("Nombre del alumno: ")
+    apellido1=input("Primer apellido del alumno: ")
+    apellido2=input("Segundo apellido del alumno: ")
+    sql=f"INSERT INTO Alumnos (DNI,Direccion,Municipio,Nombre,Apellido1,Apellido2) VALUES('{dni}','{direccion}','{municipio}','{nombre}','{apellido1}','{apellido2}')"
+    cursor=db.cursor()
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("Inserción realizada con éxito.")
+    except:
+        db.rollback()
+        print("Inserción fallida.")
+    cursor.close()
+
+def PostgreSQL_BorraAlumno(db):
+    nombre=input("Nombre del alumno: ")
+    apellido1=input("Primer apellido del alumno: ")
+    apellido2=input("Segundo apellido del alumno: ")
+    sql=f"DELETE FROM Alumnos WHERE Nombre='{nombre}' AND Apellido1='{apellido1}' AND Apellido2='{apellido2}'"
+    cursor=db.cursor()
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print()
+        print("Borrado realizado con éxito.")
+    except:
+        db.rollback()
+        print()
+        print("Borrado fallido.")
+    cursor.close()
+
+def PostgreSQL_ActualizaDireccion(db):
+    print('''¿Cómo quiere seleccionar el alumno?
+          1) Por DNI
+          2) Por Nombre completo''')
+    num=input("Elija una opción: ")
+    print()
+    while num.isnumeric() == False or int(num) > 2 or int(num) < 1:
+        print("Esa opción no existe.")
+        num=input("Elija una opción: ")
+    if int(num) == 1:
+        dni=input("DNI del alumno: ")
+        direccion=input("Nueva dirección: ")
+        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE DNI='{dni}'"
+    elif int(num) ==2 :
+        nombre=input("Nombre del alumno: ")
+        apellido1=input("Primer apellido del alumno: ")
+        apellido2=input("Segundo apellido del alumno: ")
+        direccion=input("Nueva dirección: ")
+        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE Nombre='{nombre}' AND Apellido1='{apellido1}' AND Apellido2='{apellido2}'"
+    cursor=db.cursor()
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print()
+        print("Actualización realizada con éxito.")
+    except:
+        db.rollback()
+        print()
+        print("Actualización fallida.")
+    cursor.close()
