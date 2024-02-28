@@ -1,4 +1,5 @@
 #Iván Ruipérez Benítez
+import cx_oracle
 import psycopg2
 from tabulate import tabulate
 import sys
@@ -333,3 +334,42 @@ def PostgreSQL_ActualizaDireccion(db):
         print()
         print("Actualización fallida.")
     cursor.close()
+
+def Oracle_AbreBD():
+    db=cx_oracle.connect(user="ivan_proyecto", password="1234",dsn="localhost/XE")
+    return db
+
+def Oracle_CierraBD(db):
+    db.close()
+
+def Oracle_opciones(num,db):
+    if int(num) == 1:
+        Oracle_ListaAlumnos(db)
+    elif int(num) == 2:
+        Oracle_AyudaIngresos(db)
+    elif int(num) == 3:
+        Oracle_AlumnoTareas(db)
+    elif int(num) == 4:
+        Oracle_InsertarAlumno(db)
+    elif int(num) == 5:
+        Oracle_BorraAlumno(db)
+    elif int(num) == 6:
+        Oracle_ActualizaDireccion(db)
+
+def Oracle_ListaAlumnos(db):
+    print("Hola")
+
+def Oracle_AyudaIngresos(db):
+    print("Hola")
+
+def Oracle_AlumnoTareas(db):
+    print("Hola")
+
+def Oracle_InsertarAlumno(db):
+    print("Hola")
+
+def Oracle_BorraAlumno(db):
+    print("Hola")
+
+def Oracle_ActualizaDireccion(db):
+    print("Hola")
