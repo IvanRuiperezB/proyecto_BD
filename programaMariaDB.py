@@ -1,7 +1,13 @@
 #Iván Ruipérez Benítez
-from funciones import menu,opciones,MariaDB_AbreBD
+import MySQLdb
+import sys
+from funciones import menu,opciones
 
-db=MariaDB_AbreBD()
+try:
+    db = MySQLdb.connect("localhost","ivan_proyecto","1234","Proyecto" )
+except MySQLdb.Error as e:
+    print("No puedo conectar a la base de datos:",e)
+    sys.exit(1)
 cursor=db.cursor()
 num=0
 while num != 7:

@@ -1,7 +1,12 @@
 #Iván Ruipérez Benítez
-from funciones import menu,opciones,Oracle_AbreBD
+import cx_Oracle
+from funciones import menu,opciones
 
-db=Oracle_AbreBD()
+try:
+    db=cx_Oracle.connect(user="ivan_proyecto", password="1234",dsn="localhost/XE",encoding='UTF-8')
+except cx_Oracle.DatabaseError as e:
+    print("No puedo conectar a la base de datos:",e)
+    exit()
 cursor=db.cursor()
 
 num=0

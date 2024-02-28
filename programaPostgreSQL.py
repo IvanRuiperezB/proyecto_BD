@@ -1,7 +1,13 @@
 #Iván Ruipérez Benítez
-from funciones import PostgreSQL_AbreBD,menu,opciones
+import psycopg2
+from funciones import menu,opciones
 
-db=PostgreSQL_AbreBD()
+try:
+    db=psycopg2.connect(host="localhost",database="proyecto",user="ivan_proyecto",password="1234",)
+except psycopg2.OperationalError as e:
+    print("No puedo conectar a la base de datos:",e)
+    exit()
+
 cursor=db.cursor()
 
 num=0

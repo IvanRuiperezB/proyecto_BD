@@ -1,10 +1,5 @@
 #Iván Ruipérez Benítez
-import cx_Oracle
-import psycopg2
 from tabulate import tabulate
-import sys
-import MySQLdb
-
 
 def menu():
     print()
@@ -170,27 +165,3 @@ def ActualizaDireccion(cursor,db):
         db.rollback()
         print()
         print("Actualización fallida.")
-
-def MariaDB_AbreBD():
-    try:
-        db = MySQLdb.connect("localhost","ivan_proyecto","1234","Proyecto" )
-    except MySQLdb.Error as e:
-        print("No puedo conectar a la base de datos:",e)
-        sys.exit(1)
-    return db
-
-def PostgreSQL_AbreBD():
-    try:
-        db=psycopg2.connect(host="localhost",database="proyecto",user="ivan_proyecto",password="1234",)
-    except psycopg2.OperationalError as e:
-        print("No puedo conectar a la base de datos:",e)
-        exit()
-    return db
-
-def Oracle_AbreBD():
-    try:
-        db=cx_Oracle.connect(user="ivan_proyecto", password="1234",dsn="localhost/XE",encoding='UTF-8')
-    except cx_Oracle.DatabaseError as e:
-        print("No puedo conectar a la base de datos:",e)
-        exit()
-    return db
