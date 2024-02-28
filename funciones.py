@@ -41,8 +41,11 @@ def ListaAlumnos(cursor):
         registros = cursor.fetchall()
         for registro in registros:
             datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
+        if len(datos) == 1:
+            print("0 filas seleccionadas.")
+        else:
+            tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+            print(tabla)
     except:
         print("Consulta fallida.")
         
@@ -64,8 +67,11 @@ def AyudaIngresos(cursor):
         registros = cursor.fetchall()
         for registro in registros:
             datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
+        if len(datos) == 1:
+            print("No se encontraron ayudas dentro de dicho valor.")
+        else:
+            tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+            print(tabla)
     except:
         print()
         print("Consulta fallida.")
@@ -90,6 +96,7 @@ def CompruebaValor2():
 
 def AlumnoTareas(cursor):
     dni=input("DNI del Alumno: ")
+    print()
     sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
     datos=[]
     datos.append(["ID", "Nombre","Descripción","Fecha","Duración","Terminada","IDPractica"])
@@ -98,8 +105,11 @@ def AlumnoTareas(cursor):
         registros = cursor.fetchall()
         for registro in registros:
             datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
+        if len(datos) == 1:
+            print("No se encontró dicho alumno o dicho alumno no tiene tareas que cumplan los requisitos de la consulta.")
+        else:
+            tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+            print(tabla)
     except:
         print()
         print("Consulta fallida.")
@@ -111,7 +121,7 @@ def InsertarAlumno(cursor,db):
     nombre=input("Nombre del alumno: ")
     apellido1=input("Primer apellido del alumno: ")
     apellido2=input("Segundo apellido del alumno: ")
-    sql=f"INSERT INTO Alumnos (DNI,Direccion,Municipio,Nombre,Apellido1,Apellido2) VALUES('{dni}','{direccion}','{municipio}','{nombre}','{apellido1}','{apellido2}')"
+    sql=f"INSERT INTO Alumnos VALUES ('{dni}','{direccion}','{municipio}','{nombre}','{apellido1}','{apellido2}')"
     try:
         cursor.execute(sql)
         db.commit()
