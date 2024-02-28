@@ -1,5 +1,5 @@
 #Iván Ruipérez Benítez
-from funciones import menu,opciones,MariaDB_AbreBD,CierraBD
+from funciones import menu,opciones,MariaDB_AbreBD
 
 db=MariaDB_AbreBD()
 cursor=db.cursor()
