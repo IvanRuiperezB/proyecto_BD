@@ -192,7 +192,7 @@ def PostgreSQL_opciones(num,db):
     if int(num) == 1:
         PostgreSQL_ListaAlumnos(db)
     elif int(num) == 2:
-        print("hola")
+        PostgreSQL_AyudaIngresos(db)
     elif int(num) == 3:
         print("hola")
     elif int(num) == 4:
@@ -214,5 +214,31 @@ def PostgreSQL_ListaAlumnos(db):
             datos.append(registro)
         tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
         print(tabla)
+        cursor.close()
+    except:
+        print("Consulta fallida.")
+
+def PostgreSQL_AyudaIngresos(db):
+    print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
+    print()
+    valor1=CompruebaValor1()
+    valor2=CompruebaValor2()
+    while valor1 > valor2:
+        print("Valor 1 es el mínimo y valor 2 es el máximo.")
+        valor1=CompruebaValor1()
+        valor2=CompruebaValor2()
+    print()
+    sql=f"SELECT * FROM AyudasDespl WHERE (IngresosAnoAnterior BETWEEN {int(valor1)} AND {int(valor2)})"
+    cursor=db.cursor()
+    datos=[]
+    datos.append(["FechaAyuda", "DNIAlumno", "NumUnidadFamiliar","IngresosAnoAnterior","Concedida","IDPractica"])
+    try:
+        cursor.execute(sql)
+        registros = cursor.fetchall()
+        for registro in registros:
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
+        cursor.close()
     except:
         print("Consulta fallida.")
