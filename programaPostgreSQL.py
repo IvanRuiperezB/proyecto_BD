@@ -9,4 +9,3 @@ while num != 7:
     PostgreSQL_opciones(num,db)
 
 PostgreSQL_CierraBD(db)
-
