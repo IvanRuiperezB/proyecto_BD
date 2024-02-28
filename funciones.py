@@ -179,10 +179,40 @@ def MariaDB_ActualizaDireccion(db):
         print("Actualización fallida.")
 
 def PostgreSQL_AbreBD():
-    db=psycopg2.connect(
-    host="localhost",
-    port=5432,
-    database="postgres",
-    user="postgres",
-    password="secret",
-)
+    try:
+        db=psycopg2.connect(host="localhost",database="proyecto",user="ivan_proyecto",password="1234",)
+    except psycopg2.OperationalError as e:
+        print("No puedo conectar a la base de datos:",e)
+    return db
+        
+def PostgreSQL_CierraBD(db):
+    db.close()
+
+def PostgreSQL_opciones(num,db):
+    if int(num) == 1:
+        PostgreSQL_ListaAlumnos(db)
+    elif int(num) == 2:
+        print("hola")
+    elif int(num) == 3:
+        print("hola")
+    elif int(num) == 4:
+        print("hola")
+    elif int(num) == 5:
+        print("hola")
+    elif int(num) == 6:
+        print("hola")
+
+def PostgreSQL_ListaAlumnos(db):
+    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2;"
+    cursor=db.cursor()
+    datos=[]
+    datos.append(["Nombre","Apellido1","Apellido2","NumPracticas"])
+    try:
+        cursor.execute(sql)
+        registros = cursor.fetchall()
+        for registro in registros:
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
+    except:
+        print("Consulta fallida.")
