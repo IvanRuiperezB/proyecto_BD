@@ -1,8 +1,11 @@
 #Iván Ruipérez Benítez
-from funcionesMariaDB import ListaAlumnos,AbreBD,CierraBD
+from funcionesMariaDB import menu,opciones,AbreBD,CierraBD
 
 db=AbreBD()
 
-ListaAlumnos(db)
+num=0
+while num != 7:
+    num=menu()
+    opciones(num,db)
 
 CierraBD(db)
