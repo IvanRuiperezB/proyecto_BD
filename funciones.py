@@ -194,7 +194,7 @@ def PostgreSQL_opciones(num,db):
     elif int(num) == 2:
         PostgreSQL_AyudaIngresos(db)
     elif int(num) == 3:
-        print("hola")
+        PostgreSQL_AlumnoTareas(db)
     elif int(num) == 4:
         print("hola")
     elif int(num) == 5:
@@ -232,6 +232,23 @@ def PostgreSQL_AyudaIngresos(db):
     cursor=db.cursor()
     datos=[]
     datos.append(["FechaAyuda", "DNIAlumno", "NumUnidadFamiliar","IngresosAnoAnterior","Concedida","IDPractica"])
+    try:
+        cursor.execute(sql)
+        registros = cursor.fetchall()
+        for registro in registros:
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
+        cursor.close()
+    except:
+        print("Consulta fallida.")
+
+def PostgreSQL_AlumnoTareas(db):
+    dni=input("DNI del Alumno: ")
+    sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
+    cursor=db.cursor()
+    datos=[]
+    datos.append(["ID", "Nombre","Descripción","Fecha","Duración","Terminada","IDPractica"])
     try:
         cursor.execute(sql)
         registros = cursor.fetchall()
