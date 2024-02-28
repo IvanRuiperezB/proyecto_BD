@@ -1,11 +1,13 @@
 #Iván Ruipérez Benítez
-from funciones import PostgreSQL_AbreBD,menu,PostgreSQL_opciones,PostgreSQL_CierraBD
+from funciones import PostgreSQL_AbreBD,menu,opciones
 
 db=PostgreSQL_AbreBD()
+cursor=db.cursor()
 
 num=0
 while num != 7:
     num=menu()
-    PostgreSQL_opciones(num,db)
+    opciones(num,cursor,db)
 
-PostgreSQL_CierraBD(db)
+cursor.close()
+db.close()
