@@ -1,7 +1,7 @@
 import sys
 import MySQLdb
 
-def AbreBD():
+def MariaDB_AbreBD():
     try:
         db = MySQLdb.connect("localhost","ivan_proyecto","1234","Proyecto" )
     except MySQLdb.Error as e:
@@ -9,10 +9,10 @@ def AbreBD():
         sys.exit(1)
     return db
 
-def CierraBD(db):
+def MariaDB_CierraBD(db):
     db.close()
 
-def menu():
+def MariaDB_menu():
     print()
     print('''Menú
     1. Lista los alumnos y el número de prácticas de cada uno.
@@ -29,21 +29,21 @@ def menu():
         num=input("Elija una opción: ")
     return int(num)
 
-def opciones(num,db):
+def MariaDB_opciones(num,db):
     if int(num) == 1:
-        ListaAlumnos(db)
+        MariaDB_ListaAlumnos(db)
     elif int(num) == 2:
-        AyudaIngresos(db)
+        MariaDB_AyudaIngresos(db)
     elif int(num) == 3:
-        AlumnoTareas(db)
+        MariaDB_AlumnoTareas(db)
     elif int(num) == 4:
-        InsertarAlumno(db)
+        MariaDB_InsertarAlumno(db)
     elif int(num) == 5:
-        BorraAlumno(db)
+        MariaDB_BorraAlumno(db)
     elif int(num) == 6:
-        ListaAlumnos(db)
+        MariaDB_ActualizaDireccion(db)
 
-def ListaAlumnos(db):
+def MariaDB_ListaAlumnos(db):
     sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Tareas.ID) FROM Alumnos,Practicas,Tareas WHERE Alumnos.DNI = Practicas.DNIAlumno AND Practicas.ID = Tareas.IDPractica GROUP BY Nombre,Apellido1,Apellido2;"
     cursor = db.cursor()
     try:
@@ -54,7 +54,7 @@ def ListaAlumnos(db):
     except:
         print("Error en la consulta")
         
-def AyudaIngresos(db):
+def MariaDB_AyudaIngresos(db):
     print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
     print()
     valor1=CompruebaValor1()
@@ -92,7 +92,7 @@ def CompruebaValor2():
         except ValueError:
             print("Error: Ingresa un valor numérico")
 
-def AlumnoTareas(db):
+def MariaDB_AlumnoTareas(db):
     dni=input("DNI del Alumno: ")
     sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
     cursor=db.cursor()
@@ -104,7 +104,7 @@ def AlumnoTareas(db):
     except:
         print("Error en la consulta")
         
-def InsertarAlumno(db):
+def MariaDB_InsertarAlumno(db):
     dni=input("DNI del alumno: ")
     direccion=input("Dirección del alumno: ")
     municipio=input("Municipio del alumno: ")
@@ -119,7 +119,7 @@ def InsertarAlumno(db):
     except:
         db.rollback()
         
-def BorraAlumno(db):
+def MariaDB_BorraAlumno(db):
     nombre=input("Nombre del alumno: ")
     apellido1=input("Primer apellido del alumno: ")
     apellido2=input("Segundo apellido del alumno: ")
@@ -130,3 +130,6 @@ def BorraAlumno(db):
         db.commit()
     except:
         db.rollback()
+
+def MariaDB_ActualizaDireccion(db):
+    print()
