@@ -1,5 +1,5 @@
 #Iván Ruipérez Benítez
-import cx_oracle
+import cx_Oracle
 import psycopg2
 from tabulate import tabulate
 import sys
@@ -13,7 +13,7 @@ def MariaDB_AbreBD():
         sys.exit(1)
     return db
 
-def MariaDB_CierraBD(db):
+def CierraBD(db):
     db.close()
 
 def menu():
@@ -33,22 +33,22 @@ def menu():
         num=input("Elija una opción: ")
     return int(num)
 
-def MariaDB_opciones(num,db):
+def opciones(num,db):
     if int(num) == 1:
-        MariaDB_ListaAlumnos(db)
+        ListaAlumnos(db)
     elif int(num) == 2:
-        MariaDB_AyudaIngresos(db)
+        AyudaIngresos(db)
     elif int(num) == 3:
-        MariaDB_AlumnoTareas(db)
+        AlumnoTareas(db)
     elif int(num) == 4:
-        MariaDB_InsertarAlumno(db)
+        InsertarAlumno(db)
     elif int(num) == 5:
-        MariaDB_BorraAlumno(db)
+        BorraAlumno(db)
     elif int(num) == 6:
-        MariaDB_ActualizaDireccion(db)
+        ActualizaDireccion(db)
 
-def MariaDB_ListaAlumnos(db):
-    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2;"
+def ListaAlumnos(db):
+    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2"
     cursor = db.cursor()
     datos=[]
     datos.append(["Nombre","Apellido1","Apellido2","NumPracticas"])
@@ -62,7 +62,7 @@ def MariaDB_ListaAlumnos(db):
     except:
         print("Consulta fallida.")
         
-def MariaDB_AyudaIngresos(db):
+def AyudaIngresos(db):
     print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
     print()
     valor1=CompruebaValor1()
@@ -105,7 +105,7 @@ def CompruebaValor2():
         except ValueError:
             print("Error: Ingresa un valor numérico")
 
-def MariaDB_AlumnoTareas(db):
+def AlumnoTareas(db):
     dni=input("DNI del Alumno: ")
     sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
     cursor=db.cursor()
@@ -122,7 +122,7 @@ def MariaDB_AlumnoTareas(db):
         print()
         print("Consulta fallida.")
         
-def MariaDB_InsertarAlumno(db):
+def InsertarAlumno(db):
     dni=input("DNI del alumno: ")
     direccion=input("Dirección del alumno: ")
     municipio=input("Municipio del alumno: ")
@@ -141,7 +141,7 @@ def MariaDB_InsertarAlumno(db):
         print()
         print("Inserción fallida.")
         
-def MariaDB_BorraAlumno(db):
+def BorraAlumno(db):
     nombre=input("Nombre del alumno: ")
     apellido1=input("Primer apellido del alumno: ")
     apellido2=input("Segundo apellido del alumno: ")
@@ -157,7 +157,7 @@ def MariaDB_BorraAlumno(db):
         print()
         print("Borrado fallido.")
 
-def MariaDB_ActualizaDireccion(db):
+def ActualizaDireccion(db):
     print('''¿Cómo quiere seleccionar el alumno?
           1) Por DNI
           2) Por Nombre completo''')
@@ -193,183 +193,11 @@ def PostgreSQL_AbreBD():
     except psycopg2.OperationalError as e:
         print("No puedo conectar a la base de datos:",e)
     return db
-        
-def PostgreSQL_CierraBD(db):
-    db.close()
-
-def PostgreSQL_opciones(num,db):
-    if int(num) == 1:
-        PostgreSQL_ListaAlumnos(db)
-    elif int(num) == 2:
-        PostgreSQL_AyudaIngresos(db)
-    elif int(num) == 3:
-        PostgreSQL_AlumnoTareas(db)
-    elif int(num) == 4:
-        PostgreSQL_InsertarAlumno(db)
-    elif int(num) == 5:
-        PostgreSQL_BorraAlumno(db)
-    elif int(num) == 6:
-        PostgreSQL_ActualizaDireccion(db)
-
-def PostgreSQL_ListaAlumnos(db):
-    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2;"
-    cursor=db.cursor()
-    datos=[]
-    datos.append(["Nombre","Apellido1","Apellido2","NumPracticas"])
-    try:
-        cursor.execute(sql)
-        registros = cursor.fetchall()
-        for registro in registros:
-            datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
-    except:
-        print("Consulta fallida.")
-    cursor.close()
-
-def PostgreSQL_AyudaIngresos(db):
-    print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
-    print()
-    valor1=CompruebaValor1()
-    valor2=CompruebaValor2()
-    while valor1 > valor2:
-        print("Valor 1 es el mínimo y valor 2 es el máximo.")
-        valor1=CompruebaValor1()
-        valor2=CompruebaValor2()
-    print()
-    sql=f"SELECT * FROM AyudasDespl WHERE (IngresosAnoAnterior BETWEEN {int(valor1)} AND {int(valor2)})"
-    cursor=db.cursor()
-    datos=[]
-    datos.append(["FechaAyuda", "DNIAlumno", "NumUnidadFamiliar","IngresosAnoAnterior","Concedida","IDPractica"])
-    try:
-        cursor.execute(sql)
-        registros = cursor.fetchall()
-        for registro in registros:
-            datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
-    except:
-        print("Consulta fallida.")
-    cursor.close()
-
-def PostgreSQL_AlumnoTareas(db):
-    dni=input("DNI del Alumno: ")
-    sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
-    cursor=db.cursor()
-    datos=[]
-    datos.append(["ID", "Nombre","Descripción","Fecha","Duración","Terminada","IDPractica"])
-    try:
-        cursor.execute(sql)
-        registros = cursor.fetchall()
-        for registro in registros:
-            datos.append(registro)
-        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
-        print(tabla)
-    except:
-        print("Consulta fallida.")
-    cursor.close()
-
-def PostgreSQL_InsertarAlumno(db):
-    dni=input("DNI del alumno: ")
-    direccion=input("Dirección del alumno: ")
-    municipio=input("Municipio del alumno: ")
-    nombre=input("Nombre del alumno: ")
-    apellido1=input("Primer apellido del alumno: ")
-    apellido2=input("Segundo apellido del alumno: ")
-    sql=f"INSERT INTO Alumnos (DNI,Direccion,Municipio,Nombre,Apellido1,Apellido2) VALUES('{dni}','{direccion}','{municipio}','{nombre}','{apellido1}','{apellido2}')"
-    cursor=db.cursor()
-    try:
-        cursor.execute(sql)
-        db.commit()
-        print("Inserción realizada con éxito.")
-    except:
-        db.rollback()
-        print("Inserción fallida.")
-    cursor.close()
-
-def PostgreSQL_BorraAlumno(db):
-    nombre=input("Nombre del alumno: ")
-    apellido1=input("Primer apellido del alumno: ")
-    apellido2=input("Segundo apellido del alumno: ")
-    sql=f"DELETE FROM Alumnos WHERE Nombre='{nombre}' AND Apellido1='{apellido1}' AND Apellido2='{apellido2}'"
-    cursor=db.cursor()
-    try:
-        cursor.execute(sql)
-        db.commit()
-        print()
-        print("Borrado realizado con éxito.")
-    except:
-        db.rollback()
-        print()
-        print("Borrado fallido.")
-    cursor.close()
-
-def PostgreSQL_ActualizaDireccion(db):
-    print('''¿Cómo quiere seleccionar el alumno?
-          1) Por DNI
-          2) Por Nombre completo''')
-    num=input("Elija una opción: ")
-    print()
-    while num.isnumeric() == False or int(num) > 2 or int(num) < 1:
-        print("Esa opción no existe.")
-        num=input("Elija una opción: ")
-    if int(num) == 1:
-        dni=input("DNI del alumno: ")
-        direccion=input("Nueva dirección: ")
-        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE DNI='{dni}'"
-    elif int(num) ==2 :
-        nombre=input("Nombre del alumno: ")
-        apellido1=input("Primer apellido del alumno: ")
-        apellido2=input("Segundo apellido del alumno: ")
-        direccion=input("Nueva dirección: ")
-        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE Nombre='{nombre}' AND Apellido1='{apellido1}' AND Apellido2='{apellido2}'"
-    cursor=db.cursor()
-    try:
-        cursor.execute(sql)
-        db.commit()
-        print()
-        print("Actualización realizada con éxito.")
-    except:
-        db.rollback()
-        print()
-        print("Actualización fallida.")
-    cursor.close()
 
 def Oracle_AbreBD():
-    db=cx_oracle.connect(user="ivan_proyecto", password="1234",dsn="localhost/XE")
+    try:
+        db=cx_Oracle.connect(user="ivan_proyecto", password="1234",dsn="localhost/XE",encoding='UTF-8')
+    except cx_Oracle.DatabaseError as e:
+        print("No puedo conectar a la base de datos:",e)
+        exit()
     return db
-
-def Oracle_CierraBD(db):
-    db.close()
-
-def Oracle_opciones(num,db):
-    if int(num) == 1:
-        Oracle_ListaAlumnos(db)
-    elif int(num) == 2:
-        Oracle_AyudaIngresos(db)
-    elif int(num) == 3:
-        Oracle_AlumnoTareas(db)
-    elif int(num) == 4:
-        Oracle_InsertarAlumno(db)
-    elif int(num) == 5:
-        Oracle_BorraAlumno(db)
-    elif int(num) == 6:
-        Oracle_ActualizaDireccion(db)
-
-def Oracle_ListaAlumnos(db):
-    print("Hola")
-
-def Oracle_AyudaIngresos(db):
-    print("Hola")
-
-def Oracle_AlumnoTareas(db):
-    print("Hola")
-
-def Oracle_InsertarAlumno(db):
-    print("Hola")
-
-def Oracle_BorraAlumno(db):
-    print("Hola")
-
-def Oracle_ActualizaDireccion(db):
-    print("Hola")
