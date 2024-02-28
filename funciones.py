@@ -1,3 +1,4 @@
+#Iván Ruipérez Benítez
 import sys
 import MySQLdb
 
@@ -12,7 +13,7 @@ def MariaDB_AbreBD():
 def MariaDB_CierraBD(db):
     db.close()
 
-def MariaDB_menu():
+def menu():
     print()
     print('''Menú
     1. Lista los alumnos y el número de prácticas de cada uno.
@@ -52,7 +53,7 @@ def MariaDB_ListaAlumnos(db):
         for registro in registros:
             print(registro[0],registro[1],registro[2],registro[3])
     except:
-        print("Error en la consulta")
+        print("Consulta fallida.")
         
 def MariaDB_AyudaIngresos(db):
     print("Ponga dos valores para ver las ayudas de desplazamiento que tengan unos ingresos del año anterior dentro del rango introducido.")
@@ -72,7 +73,7 @@ def MariaDB_AyudaIngresos(db):
         for registro in registros:
             print(registro[0],registro[1],registro[2],registro[3],registro[4],registro[5])
     except:
-        print("Error en la consulta")
+        print("Consulta fallida.")
     
 def CompruebaValor1():
     while True:
@@ -102,7 +103,7 @@ def MariaDB_AlumnoTareas(db):
         for registro in registros:
             print(registro[0],registro[1],registro[2],registro[3],registro[4],registro[5])
     except:
-        print("Error en la consulta")
+        print("Consulta fallida.")
         
 def MariaDB_InsertarAlumno(db):
     dni=input("DNI del alumno: ")
@@ -116,8 +117,10 @@ def MariaDB_InsertarAlumno(db):
     try:
         cursor.execute(sql)
         db.commit()
+        print("Inserción realizada con éxito.")
     except:
         db.rollback()
+        print("Inserción fallida.")
         
 def MariaDB_BorraAlumno(db):
     nombre=input("Nombre del alumno: ")
@@ -128,8 +131,35 @@ def MariaDB_BorraAlumno(db):
     try:
         cursor.execute(sql)
         db.commit()
+        print("Borrado realizado con éxito.")
     except:
         db.rollback()
+        print("Borrado fallido.")
 
 def MariaDB_ActualizaDireccion(db):
+    print('''¿Cómo quiere seleccionar el alumno?
+          1) Por DNI
+          2) Por Nombre completo''')
+    num=input("Elija una opción: ")
     print()
+    while num.isnumeric() == False or int(num) > 2 or int(num) < 1:
+        print("Esa opción no existe.")
+        num=input("Elija una opción: ")
+    if int(num) == 1:
+        dni=input("DNI del alumno: ")
+        direccion=input("Nueva dirección: ")
+        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE DNI='{dni}'"
+    elif int(num) ==2 :
+        nombre=input("Nombre del alumno: ")
+        apellido1=input("Primer apellido del alumno: ")
+        apellido2=input("Segundo apellido del alumno: ")
+        direccion=input("Nueva dirección: ")
+        sql=f"UPDATE Alumnos SET Direccion='{direccion}' WHERE Nombre='{nombre}' AND Apellido1='{apellido1}' AND Apellido2='{apellido2}'"
+    cursor=db.cursor()
+    try:
+        cursor.execute(sql)
+        db.commit()
+        print("Actualización realizada con éxito.")
+    except:
+        db.rollback()
+        print("Actualización fallida.")
