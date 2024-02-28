@@ -1,4 +1,5 @@
 #Iván Ruipérez Benítez
+from tabulate import tabulate
 import sys
 import MySQLdb
 
@@ -45,13 +46,17 @@ def MariaDB_opciones(num,db):
         MariaDB_ActualizaDireccion(db)
 
 def MariaDB_ListaAlumnos(db):
-    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Tareas.ID) FROM Alumnos,Practicas,Tareas WHERE Alumnos.DNI = Practicas.DNIAlumno AND Practicas.ID = Tareas.IDPractica GROUP BY Nombre,Apellido1,Apellido2;"
+    sql="SELECT Alumnos.Nombre,Apellido1,Apellido2,COUNT(Practicas.ID) FROM Alumnos,Practicas WHERE Alumnos.DNI = Practicas.DNIAlumno GROUP BY Nombre,Apellido1,Apellido2;"
     cursor = db.cursor()
+    datos=[]
+    datos.append(["Nombre","Apellido1","Apellido2","NumPracticas"])
     try:
         cursor.execute(sql)
         registros = cursor.fetchall()
         for registro in registros:
-            print(registro[0],registro[1],registro[2],registro[3])
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
     except:
         print("Consulta fallida.")
         
@@ -67,11 +72,15 @@ def MariaDB_AyudaIngresos(db):
     print()
     sql=f"SELECT * FROM AyudasDespl WHERE (IngresosAnoAnterior BETWEEN {int(valor1)} AND {int(valor2)})"
     cursor=db.cursor()
+    datos=[]
+    datos.append(["FechaAyuda", "DNIAlumno", "NumUnidadFamiliar","IngresosAnoAnterior","Concedida","IDPractica"])
     try:
         cursor.execute(sql)
         registros = cursor.fetchall()
         for registro in registros:
-            print(registro[0],registro[1],registro[2],registro[3],registro[4],registro[5])
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
     except:
         print("Consulta fallida.")
     
@@ -97,11 +106,15 @@ def MariaDB_AlumnoTareas(db):
     dni=input("DNI del Alumno: ")
     sql=f"SELECT * FROM Tareas WHERE Terminada='1' AND IDPractica IN (SELECT ID FROM Practicas WHERE DNIAlumno = '{dni}')"
     cursor=db.cursor()
+    datos=[]
+    datos.append(["ID", "Nombre","Descripción","Fecha","Duración","Terminada","IDPractica"])
     try:
         cursor.execute(sql)
         registros = cursor.fetchall()
         for registro in registros:
-            print(registro[0],registro[1],registro[2],registro[3],registro[4],registro[5])
+            datos.append(registro)
+        tabla= tabulate(datos, headers="firstrow", tablefmt="fancy_grid")
+        print(tabla)
     except:
         print("Consulta fallida.")
         
